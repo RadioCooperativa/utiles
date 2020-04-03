@@ -160,12 +160,22 @@ function hideWindow(plataforma) {
 
     async function procesaSkin(data){
         
-        ventana_.on('scroll', function(){
+        // ventana_.on('scroll', function(){
+            if(!flag_){
+                flagSkin = true;
+            }else{
+                ventana_.on('scroll', function(){
+                    dibujaSkin(data, flagSkin,flag_);
+                    }); 
+            }
             dibujaSkin(data, flagSkin,flag_);
-        });       
+        // });       
     }
 
     function dibujaSkin(data, flagSkin, flag_){
+        console.log("data: ",data);
+        console.log("flagSkin: ",flagSkin);
+        console.log("flag_: ",flag_);
 
         if (flagSkin || !flag_){
             const {tipo, params, trackUrl } = data;
