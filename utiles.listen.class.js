@@ -3,7 +3,7 @@
 })();
 
 let flag_ = false;
-let ventana = $(window);
+let ventana_ = $(window);
 let flagSkin = false;
 
 function init (){
@@ -20,7 +20,6 @@ function init (){
 async function procesarMensaje(e) {
         const { data } = e;
         const {tipo, cmd, params, mensaje, cerrar, mobile } = data;
-        console.log("mensaje: ",mensaje);
 
         let plataforma = mobile || null;
 
@@ -150,6 +149,7 @@ function hideWindow(plataforma) {
         if(plataforma === 1){
             document.getElementById("coop_m_1x1_1").style.display="none";
             document.getElementById("div-gpt-ad-1530907736655-2").style.display="initial";
+            flagSkin = true;
         }else{ if(!plataforma){
             document.getElementById("coop_d_1x1_1").style.display="none";
             document.getElementById("div-gpt-ad-1530907428377-2").style.display="initial";
@@ -160,91 +160,81 @@ function hideWindow(plataforma) {
 
     async function procesaSkin(data){
         
-        ventana.on('scroll', function(){
-            console.log("enviando data: ",data);
-            console.log("enviando flagSkin: ",flagSkin);
-
+        ventana_.on('scroll', function(){
             dibujaSkin(data, flagSkin,flag_);
-        });
-            
-            
+        });       
     }
 
     function dibujaSkin(data, flagSkin, flag_){
-        console.log("recibiendo data :",data);
-        console.log("recibiendo flagSkin :",flagSkin);
-        console.log("recibiendo flag_ :",flag_);
-
-
 
         if (flagSkin || !flag_){
-        const {tipo, params, trackUrl } = data;
-        const {position, height, width, display, top, left, tag} = params;
+            const {tipo, params, trackUrl } = data;
+            const {position, height, width, display, top, left, tag} = params;
 
-        let style_tag                               = tag;
-        let style                                   = document.createElement('style');
-        let scriptTrack                             = document.createElement('script');
+            let style_tag                               = tag;
+            let style                                   = document.createElement('style');
+            let scriptTrack                             = document.createElement('script');
 
-        let contendedor_iframe                      = document.getElementsByClassName(tipo);
-        let iframe                                  = contendedor_iframe[0].getElementsByTagName('iframe');
+            let contendedor_iframe                      = document.getElementsByClassName(tipo);
+            let iframe                                  = contendedor_iframe[0].getElementsByTagName('iframe');
 
-        /*Iframe*/
-        if(trackUrl){
-            iframe ?  
-            (iframe[0].style.position               = position          || null,
-            iframe[0].style.height                  = height            || null,
-            iframe[0].style.width                   = width             || null,
-            iframe[0].style.display                 = display           || null,
-            iframe[0].style.top                     = top               || null,
-            iframe[0].style.left                    = left              || null, 
-            scriptTrack.src                         = trackUrl          || null,
-
-            style.appendChild(document.createTextNode(style_tag)),
-            document.getElementsByTagName('body')[0].appendChild(style),
-            document.getElementsByClassName(tipo)[0].appendChild(scriptTrack),
-            
-            document.addEventListener("DOMContentLoaded", function(e) {
-                document.getElementsByTagName("NAV")[0].classList.add("sticky")
-                }),  
-                $(function() {
-                    $(window).scroll(function() {
-                        if ($(this).scrollTop() > 200) { 
-                            $('header nav').addClass("sticky"); 
-                                } else { 
-                                    $('header nav').addClass("sticky"); 
-                                }
-                    });
-                })
-            )                     
-            : false;
-
-            }else{
+            /*Iframe*/
+            if(trackUrl){
                 iframe ?  
-            (iframe[0].style.position               = position          || null,
-            iframe[0].style.height                  = height            || null,
-            iframe[0].style.width                   = width             || null,
-            iframe[0].style.display                 = display           || null,
-            iframe[0].style.top                     = top               || null,
-            iframe[0].style.left                    = left              || null, 
+                (iframe[0].style.position               = position          || null,
+                iframe[0].style.height                  = height            || null,
+                iframe[0].style.width                   = width             || null,
+                iframe[0].style.display                 = display           || null,
+                iframe[0].style.top                     = top               || null,
+                iframe[0].style.left                    = left              || null, 
+                scriptTrack.src                         = trackUrl          || null,
 
-            style.appendChild(document.createTextNode(style_tag)),
-            document.getElementsByTagName('body')[0].appendChild(style),
-            document.addEventListener("DOMContentLoaded", function(e) {
-                document.getElementsByTagName("NAV")[0].classList.add("sticky")
-                }),  
-                $(function() {
-                    $(window).scroll(function() {
-                        if ($(this).scrollTop() > 200) { 
-                            $('header nav').addClass("sticky"); 
-                                } else { 
-                                    $('header nav').addClass("sticky"); 
-                                }
-                    });
-                })
-            )                     
-            : false;
+                style.appendChild(document.createTextNode(style_tag)),
+                document.getElementsByTagName('body')[0].appendChild(style),
+                document.getElementsByClassName(tipo)[0].appendChild(scriptTrack),
+                
+                document.addEventListener("DOMContentLoaded", function(e) {
+                    document.getElementsByTagName("NAV")[0].classList.add("sticky")
+                    }),  
+                    $(function() {
+                        $(window).scroll(function() {
+                            if ($(this).scrollTop() > 200) { 
+                                $('header nav').addClass("sticky"); 
+                                    } else { 
+                                        $('header nav').addClass("sticky"); 
+                                    }
+                        });
+                    })
+                )                     
+                : false;
+
+                }else{
+                    iframe ?  
+                (iframe[0].style.position               = position          || null,
+                iframe[0].style.height                  = height            || null,
+                iframe[0].style.width                   = width             || null,
+                iframe[0].style.display                 = display           || null,
+                iframe[0].style.top                     = top               || null,
+                iframe[0].style.left                    = left              || null, 
+
+                style.appendChild(document.createTextNode(style_tag)),
+                document.getElementsByTagName('body')[0].appendChild(style),
+                document.addEventListener("DOMContentLoaded", function(e) {
+                    document.getElementsByTagName("NAV")[0].classList.add("sticky")
+                    }),  
+                    $(function() {
+                        $(window).scroll(function() {
+                            if ($(this).scrollTop() > 200) { 
+                                $('header nav').addClass("sticky"); 
+                                    } else { 
+                                        $('header nav').addClass("sticky"); 
+                                    }
+                        });
+                    })
+                )                     
+                : false;
+                }
             }
-        }
 
     }
 
