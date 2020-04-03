@@ -3,7 +3,8 @@
 })();
 
 let flag_ = false;
-
+let ventana = $(window);
+let flagSkin = false;
 
 function init (){
     const windowEvent       = addEventListener('message', procesarMensaje, false);
@@ -11,9 +12,10 @@ function init (){
             {
                 windowEvent;
             }else if(window.onmessage){
-                procesarMensaje
-            }
+                procesarMensaje            }
 }
+
+
 
 async function procesarMensaje(e) {
         const { data } = e;
@@ -34,7 +36,7 @@ async function procesarMensaje(e) {
 
                     await procesaItt(data);                    
                     }
-                    if(mensaje === 'skin'){
+                    if(mensaje === 'skin' ){
                         /* Skin Branding */
                         await procesaSkin(data);                   
                     }        
@@ -112,7 +114,7 @@ function detectmob() {
      }
    }
 
-    function procesaItt(data){
+function procesaItt(data){
         /*Contedor iframe*/
         const { params, tipo} = data;
         const { position, height, width, zIndex, display, marginTop, top, left, bottom } = params;
@@ -144,18 +146,38 @@ function detectmob() {
         /* /Iframe*/
 }
 
-    function hideWindow(plataforma) {
+function hideWindow(plataforma) {
         if(plataforma === 1){
             document.getElementById("coop_m_1x1_1").style.display="none";
             document.getElementById("div-gpt-ad-1530907736655-2").style.display="initial";
         }else{ if(!plataforma){
             document.getElementById("coop_d_1x1_1").style.display="none";
             document.getElementById("div-gpt-ad-1530907428377-2").style.display="initial";
+            flagSkin = true;
             }  
         }      
     }
 
-    function procesaSkin(data){
+    async function procesaSkin(data){
+        
+        ventana.on('scroll', function(){
+            console.log("enviando data: ",data);
+            console.log("enviando flagSkin: ",flagSkin);
+
+            dibujaSkin(data, flagSkin,flag_);
+        });
+            
+            
+    }
+
+    function dibujaSkin(data, flagSkin, flag_){
+        console.log("recibiendo data :",data);
+        console.log("recibiendo flagSkin :",flagSkin);
+        console.log("recibiendo flag_ :",flag_);
+
+
+
+        if (flagSkin || !flag_){
         const {tipo, params, trackUrl } = data;
         const {position, height, width, display, top, left, tag} = params;
 
@@ -165,9 +187,9 @@ function detectmob() {
 
         let contendedor_iframe                      = document.getElementsByClassName(tipo);
         let iframe                                  = contendedor_iframe[0].getElementsByTagName('iframe');
-        
-            /*Iframe*/
-            if(trackUrl){
+
+        /*Iframe*/
+        if(trackUrl){
             iframe ?  
             (iframe[0].style.position               = position          || null,
             iframe[0].style.height                  = height            || null,
@@ -221,9 +243,9 @@ function detectmob() {
                 })
             )                     
             : false;
-
             }
-            
+        }
+
     }
 
     function procesaExpandible(data){
