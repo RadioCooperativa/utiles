@@ -89,6 +89,7 @@ function procesaNewItt(data){
       });
       if(event.slot.getSlotElementId() === "coop_d_1x1_1" ){
             // document.getElementById("div-gpt-ad-1530907428377-2").style.display="none";
+            console.log("dibuja newitt")
           }else{ 
               if(event.slot.getSlotElementId() === "coop_m_1x1_1") {
                 document.getElementById("div-gpt-ad-1530907736655-2").style.display="none";     
@@ -173,9 +174,6 @@ function hideWindow(plataforma) {
     }
 
     function dibujaSkin(data, flagSkin, flag_){
-        console.log("data: ",data);
-        console.log("flagSkin: ",flagSkin);
-        console.log("flag_: ",flag_);
 
         if (flagSkin || !flag_){
             const {tipo, params, trackUrl } = data;
