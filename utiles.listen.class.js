@@ -185,7 +185,6 @@ function hideWindow(plataforma) {
 
     async function procesaSkin(data){
         
-        // ventana_.on('scroll', function(){
             if(!flag_){
                 flagSkin = true;
             }else{
@@ -193,8 +192,7 @@ function hideWindow(plataforma) {
                     dibujaSkin(data, flagSkin,flag_);
                     }); 
             }
-            dibujaSkin(data, flagSkin,flag_);
-        // });       
+            dibujaSkin(data, flagSkin,flag_);      
     }
 
     function dibujaSkin(data, flagSkin, flag_){
