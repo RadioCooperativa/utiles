@@ -129,7 +129,7 @@ function procesaItt(data){
         const { position, height, width, zIndex, display, marginTop, top, left, bottom } = params;
          console.log("procesaItt cerrar: ",cerrar);
          console.log("procesaItt coop_dfp_tipo: ",coop_dfp_tipo);
-         console.log("procesaItt flagItt: ",flagItt);
+         console.log("procesaItt flagItt: ",flagItt)
             if(!flagItt){
                 if (coop_dfp_tipo === 'portada' && cerrar === 1){
                     flagItt = true;
