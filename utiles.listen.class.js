@@ -5,50 +5,59 @@
 let flag_ = false;
 let ventana_ = $(window);
 let flagSkin = false;
+let flagItt = false;
 
 function init (){
     const windowEvent       = addEventListener('message', procesarMensaje, false);
+
+    console.log("init coop_dfp_tipo: ",coop_dfp_tipo);
         if(window.addEventListener)
             {
                 windowEvent;
             }else if(window.onmessage){
-                procesarMensaje            }
+                procesarMensaje            
+            }
 }
-
-
 
 async function procesarMensaje(e) {
         const { data } = e;
         const {tipo, cmd, params, mensaje, cerrar, mobile } = data;
+    console.log("procesarMensaje coop_dfp_tipo: ",coop_dfp_tipo);
+
 
         let plataforma = mobile || null;
-
-        if(cerrar === 1 ){hideWindow(plataforma);}
+        // console.log("procesarMensaje cerrar: ",cerrar);
+        if(cerrar === 1 ){
+            hideWindow(plataforma);
+        }
+        console.log("procesarMensaje mensaje: ", mensaje);
+        if(mensaje){
+            if (!cerrar && mensaje !== 'itt'){
+                console.log("entra megacondicion");
+                if(detectmob() === 1){
+                    go('https://pubads.g.doubleclick.net/gampad/ads?iu=/1020719/coop_m_preroll_home_stiky&description_url=http%3A%2F%2Fwww.cooperativa.cl&tfcd=0&npa=0&sz=400x300&gdfp_req=1&output=vast&unviewed_position_start=1&env=vp&impl=s&correlator=',[null], [null], [null]);
+                }else if(detectmob() === 0){
+                    go('https://pubads.g.doubleclick.net/gampad/ads?iu=/1020719/coop_d_preroll_home_stiky&description_url=http%3A%2F%2Fwww.cooperativa.cl&tfcd=0&npa=0&sz=400x300&gdfp_req=1&output=vast&unviewed_position_start=1&env=vp&impl=s&correlator=',[null], [null], [null]);
+                }
+            }
+        }
+        
 
         if (typeof e !== 'object' || typeof tipo !=='string'|| cmd !== 'safe-frame' || typeof params !== 'object') {return false;}
-                    if(mensaje === 'newItt'){
-
-                        await procesaNewItt(data);
-                    }
-                    if(mensaje === 'itt' ){
-                        /* Contedor iframe */
-
-                    await procesaItt(data);                    
-                    }
-                    if(mensaje === 'skin' ){
-                        /* Skin Branding */
-                        await procesaSkin(data);                   
-                    }        
-                    if(mensaje === 'expandible'){
-                        /* Expandible */
-                        await procesaExpandible(data);                                         
-                    }    
-                    if(mensaje === 'footer'){
-                        /* FOOTER */
-                        await procesaFooter(data);                                         
-                    }
-                      
-                       
+            switch (mensaje){
+                case('newItt'):
+                    procesaNewItt(data);
+                break;
+                case ('itt' ):
+                    procesaItt(data);
+                break;
+                case ('expandible'):
+                    procesaExpandible(data); 
+                break;
+                case ('footer'):
+                    procesaFooter(data);
+                break;
+            }        
 }
 
 function procesaNewItt(data){
@@ -89,6 +98,7 @@ function procesaNewItt(data){
       });
       if(event.slot.getSlotElementId() === "coop_d_1x1_1" ){
             // document.getElementById("div-gpt-ad-1530907428377-2").style.display="none";
+            console.log("dibuja newitt")
           }else{ 
               if(event.slot.getSlotElementId() === "coop_m_1x1_1") {
                 document.getElementById("div-gpt-ad-1530907736655-2").style.display="none";     
@@ -115,8 +125,22 @@ function detectmob() {
 
 function procesaItt(data){
         /*Contedor iframe*/
-        const { params, tipo} = data;
+        const { params, tipo, cerrar, timeOut} = data;
         const { position, height, width, zIndex, display, marginTop, top, left, bottom } = params;
+         console.log("procesaItt cerrar: ",cerrar);
+         console.log("procesaItt coop_dfp_tipo: ",coop_dfp_tipo);
+         console.log("procesaItt flagItt: ",flagItt);
+            if(!flagItt){
+                if (coop_dfp_tipo === 'portada' && cerrar === 1){
+                    flagItt = true;
+                    if(detectmob() === 1){
+                        go('https://pubads.g.doubleclick.net/gampad/ads?iu=/1020719/coop_m_preroll_home_stiky&description_url=http%3A%2F%2Fwww.cooperativa.cl&tfcd=0&npa=0&sz=400x300&gdfp_req=1&output=vast&unviewed_position_start=1&env=vp&impl=s&correlator=',[null], [null], [null]);
+                    }else if(detectmob() === 0){
+                        go('https://pubads.g.doubleclick.net/gampad/ads?iu=/1020719/coop_d_preroll_home_stiky&description_url=http%3A%2F%2Fwww.cooperativa.cl&tfcd=0&npa=0&sz=400x300&gdfp_req=1&output=vast&unviewed_position_start=1&env=vp&impl=s&correlator=',[null], [null], [null]);
+                    }
+                }
+            }
+        
 
         let contendedor_iframe                      = document.getElementsByClassName(tipo);
         let iframe                                  = contendedor_iframe[0].getElementsByTagName('iframe');
@@ -146,6 +170,7 @@ function procesaItt(data){
 }
 
 function hideWindow(plataforma) {
+    
         if(plataforma === 1){
             document.getElementById("coop_m_1x1_1").style.display="none";
             document.getElementById("div-gpt-ad-1530907736655-2").style.display="initial";
@@ -173,9 +198,6 @@ function hideWindow(plataforma) {
     }
 
     function dibujaSkin(data, flagSkin, flag_){
-        console.log("data: ",data);
-        console.log("flagSkin: ",flagSkin);
-        console.log("flag_: ",flag_);
 
         if (flagSkin || !flag_){
             const {tipo, params, trackUrl } = data;
