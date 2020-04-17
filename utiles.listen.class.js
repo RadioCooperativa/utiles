@@ -6,6 +6,8 @@ let flag_ = false;
 let ventana_ = $(window);
 let flagSkin = false;
 let flagItt = false;
+let flagNot = false;
+
 
 function init (){
     const windowEvent       = addEventListener('message', procesarMensaje, false);
@@ -22,7 +24,7 @@ function init (){
 async function procesarMensaje(e) {
         const { data } = e;
         const {tipo, cmd, params, mensaje, cerrar, mobile } = data;
-    console.log("procesarMensaje coop_dfp_tipo: ",coop_dfp_tipo);
+        console.log("procesarMensaje coop_dfp_tipo: ",coop_dfp_tipo);
 
 
         let plataforma = mobile || null;
@@ -34,49 +36,64 @@ async function procesarMensaje(e) {
         if(mensaje){
             if (!cerrar && mensaje !== 'itt'){
                 console.log("entra megacondicion");
-                
-                if(detectmob() === 1){
+                console.log("procesarMensaje llamando instanciaFormatVideoAds");
+                instanciaFormatVideoAds();
+                    }else{
+                        if (typeof e !== 'object' || typeof tipo !=='string'|| cmd !== 'safe-frame' || typeof params !== 'object') {return false;}
+                            switch (mensaje){
+                                case('newItt'):
+                                    procesaNewItt(data);
+                                break;
+                                case ('itt' ):
+                                    procesaItt(data);
+                                break;
+                                case ('expandible'):
+                                    procesaExpandible(data); 
+                                break;
+                                case ('footer'):
+                                    procesaFooter(data);
+                                break;
+                            }    
+                        }
+            }else{
+                    console.log("procesarMensaje flagNot");
+                    console.log("procesarMensaje flagNot llamando instanciaFormatVideoAds");
+                    instanciaFormatVideoAds();
 
-                    switch (coop_dfp_tipo){
-                        case ('portada'):
-                            go('https://pubads.g.doubleclick.net/gampad/ads?iu=/1020719/coop_m_preroll_home_stiky&description_url=http%3A%2F%2Fwww.cooperativa.cl&tfcd=0&npa=0&sz=400x300&gdfp_req=1&output=vast&unviewed_position_start=1&env=vp&impl=s&correlator=',[null], [null], [null]);
-                        break;
-                        case ('articulo'):
-                            go('https://pubads.g.doubleclick.net/gampad/ads?iu=/1020719/coop_m_preroll_inread&description_url=https%3A%2F%2Fwww.cooperativa.cl%2F&tfcd=0&npa=0&sz=640x360&gdfp_req=1&output=vast&unviewed_position_start=1&env=vp&impl=s&correlator=',arraySeccion, arrayTem, arrayStem); 
-                        break;
-                    }
-
-                }else if(detectmob() === 0){
-
-                    switch (coop_dfp_tipo){
-                        case ('portada'):
-                            go('https://pubads.g.doubleclick.net/gampad/ads?iu=/1020719/coop_d_preroll_home_stiky&description_url=http%3A%2F%2Fwww.cooperativa.cl&tfcd=0&npa=0&sz=400x300&gdfp_req=1&output=vast&unviewed_position_start=1&env=vp&impl=s&correlator=',[null], [null], [null]);
-                        break;
-                        case ('articulo'):
-                            go('https://pubads.g.doubleclick.net/gampad/ads?iu=/1020719/coop_d_preroll_inread&description_url=https%3A%2F%2Fwww.cooperativa.cl%2F&tfcd=0&npa=0&sz=640x360&gdfp_req=1&output=vast&unviewed_position_start=1&env=vp&impl=s&correlator=',arraySeccion, arrayTem, arrayStem); 
-                        break;
-                    } 
-                }
-            }
-        }
-        
-        if (typeof e !== 'object' || typeof tipo !=='string'|| cmd !== 'safe-frame' || typeof params !== 'object') {return false;}
-            switch (mensaje){
-                case('newItt'):
-                    procesaNewItt(data);
-                break;
-                case ('itt' ):
-                    procesaItt(data);
-                break;
-                case ('expandible'):
-                    procesaExpandible(data); 
-                break;
-                case ('footer'):
-                    procesaFooter(data);
-                break;
-            }        
+        }     
 }
 
+function instanciaFormatVideoAds(){
+    console.log("instanciaFormatVideoAds coop_dfp_tipo: ",coop_dfp_tipo);
+    
+    if(detectmob() === 1){
+        if (!flagNot){
+            flagNot = true;
+
+        switch (coop_dfp_tipo){
+            case ('portada'):
+                go('https://pubads.g.doubleclick.net/gampad/ads?iu=/1020719/coop_m_preroll_home_stiky&description_url=http%3A%2F%2Fwww.cooperativa.cl&tfcd=0&npa=0&sz=400x300&gdfp_req=1&output=vast&unviewed_position_start=1&env=vp&impl=s&correlator=',[null], [null], [null]);
+            break;
+            case ('articulo'):
+                go('https://pubads.g.doubleclick.net/gampad/ads?iu=/1020719/coop_m_preroll_inread&description_url=https%3A%2F%2Fwww.cooperativa.cl%2F&tfcd=0&npa=0&sz=640x360&gdfp_req=1&output=vast&unviewed_position_start=1&env=vp&impl=s&correlator=',arraySeccion, arrayTem, arrayStem); 
+            break;
+        }
+    }
+    }else if(detectmob() === 0){
+        console.log("instanciaFormatVideoAds flagNot detectmob = 0: ",flagNot);
+        if (!flagNot){
+            flagNot = true;
+        switch (coop_dfp_tipo){
+            case ('portada'):
+                go('https://pubads.g.doubleclick.net/gampad/ads?iu=/1020719/coop_d_preroll_home_stiky&description_url=http%3A%2F%2Fwww.cooperativa.cl&tfcd=0&npa=0&sz=400x300&gdfp_req=1&output=vast&unviewed_position_start=1&env=vp&impl=s&correlator=',[null], [null], [null]);
+            break;
+            case ('articulo'):
+                go('https://pubads.g.doubleclick.net/gampad/ads?iu=/1020719/coop_d_preroll_inread&description_url=https%3A%2F%2Fwww.cooperativa.cl%2F&tfcd=0&npa=0&sz=640x360&gdfp_req=1&output=vast&unviewed_position_start=1&env=vp&impl=s&correlator=',arraySeccion, arrayTem, arrayStem); 
+            break;
+        } 
+        }
+    }
+}
 function procesaNewItt(data){
     flag_ = true;                   
 
@@ -150,26 +167,8 @@ function procesaItt(data){
             if(!flagItt){
                 if (cerrar === 1){
                     flagItt = true;
-                    if(detectmob() === 1){
-                        switch (coop_dfp_tipo){
-                            case('portada'):
-                                go('https://pubads.g.doubleclick.net/gampad/ads?iu=/1020719/coop_m_preroll_home_stiky&description_url=http%3A%2F%2Fwww.cooperativa.cl&tfcd=0&npa=0&sz=400x300&gdfp_req=1&output=vast&unviewed_position_start=1&env=vp&impl=s&correlator=',[null], [null], [null]);
-                            break;
-                            case ('articulo'):
-                                go('https://pubads.g.doubleclick.net/gampad/ads?iu=/1020719/coop_m_preroll_inread&description_url=https%3A%2F%2Fwww.cooperativa.cl%2F&tfcd=0&npa=0&sz=640x360&gdfp_req=1&output=vast&unviewed_position_start=1&env=vp&impl=s&correlator=',arraySeccion, arrayTem, arrayStem); 
-                            break;
-                        }
-                    }else if(detectmob() === 0){
-                        switch (coop_dfp_tipo){
-                            case ('portada'):
-                                go('https://pubads.g.doubleclick.net/gampad/ads?iu=/1020719/coop_d_preroll_home_stiky&description_url=http%3A%2F%2Fwww.cooperativa.cl&tfcd=0&npa=0&sz=400x300&gdfp_req=1&output=vast&unviewed_position_start=1&env=vp&impl=s&correlator=',[null], [null], [null]);
-                            break;
-                            case ('articulo'):
-                                console.log("procesaItt articulo ");
-                                go('https://pubads.g.doubleclick.net/gampad/ads?iu=/1020719/coop_d_preroll_inread&description_url=https%3A%2F%2Fwww.cooperativa.cl%2F&tfcd=0&npa=0&sz=640x360&gdfp_req=1&output=vast&unviewed_position_start=1&env=vp&impl=s&correlator=',arraySeccion, arrayTem, arrayStem); 
-                            break;
-                        }
-                    } 
+                    console.log("procesaItt llamando instanciaFormatVideoAds");
+                    instanciaFormatVideoAds();
                 }
             }
         
