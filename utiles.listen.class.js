@@ -7,12 +7,12 @@ let ventana_ = $(window);
 let flagSkin = false;
 let flagItt = false;
 let flagNot = false;
+let flagVideo = false;
 
 
 function init (){
     const windowEvent       = addEventListener('message', procesarMensaje, false);
 
-    console.log("init coop_dfp_tipo: ",coop_dfp_tipo);
         if(window.addEventListener)
             {
                 windowEvent;
@@ -21,78 +21,97 @@ function init (){
             }
 }
 
-function procesarMensaje(e) {
+async function procesarMensaje(e) {
         const { data } = e;
-        const {tipo, cmd, params, mensaje, cerrar } = data;
+        const {mensaje, cerrar, timeOut } = data;
+
         console.log("procesarMensaje coop_dfp_tipo: ",coop_dfp_tipo);
-
-        let plataforma = detectmob();
-
+        console.log("procesarMensaje timeOut: ",timeOut);
         console.log("procesarMensaje cerrar: ",cerrar);
-        console.log("procesarMensaje plataforma: ",plataforma);
         console.log("procesarMensaje mensaje: ", mensaje);
 
         if(mensaje){
             if (!cerrar && mensaje !== 'itt'){
-                console.log("entra megacondicion");
-                console.log("procesarMensaje llamando instanciaFormatVideoAds");
-                instanciaFormatVideoAds();
-                    }else{
-                        if (typeof e !== 'object' || typeof tipo !=='string'|| cmd !== 'safe-frame' || typeof params !== 'object') {return false;}
-                            switch (mensaje){
-                                case('newItt'):
-                                    procesaNewItt(data);
-                                break;
-                                case ('itt' ):
-                                    procesaItt(data);
-                                break;
-                                case ('expandible'):
-                                    procesaExpandible(data); 
-                                break;
-                                case ('footer'):
-                                    procesaFooter(data);
-                                break;
-                            }    
-                        }
+                console.log("entran formatos fuera de itt: ",mensaje);
+                        switch (mensaje){
+                            case('newItt'):
+                                procesaNewItt(data);
+                                flagVideo = true;
+                                instanciaFormatVideoAds(cerrar);
+                            break;
+                            case ('expandible'):
+                                procesaExpandible(data);   
+                                flagVideo = true;
+                                instanciaFormatVideoAds(cerrar);
+                            break;
+                            case ('footer'):
+                                procesaFooter(data);
+                                flagVideo = true;
+                                instanciaFormatVideoAds(cerrar);
+                            break;
+                            } 
+                        }else{
+                        // if (typeof e !== 'object' || typeof tipo !=='string'|| cmd !== 'safe-frame' || typeof params !== 'object') {return false;}}
+                            if(mensaje === 'itt'){
+                                console.log("llamando a procesaItt")
+                                procesaItt(data);
+                                flagVideo = true;
+                                }     
+                            }
+        }else{
+            console.log("procesarMensaje flagVideo: ",flagVideo);
+            if(!flagVideo){
+                console.log("procesarMensaje flagNot llamando instanciaFormatVideoAds");
+                instanciaFormatVideoAds(cerrar);
             }else{
-                    console.log("procesarMensaje flagNot llamando instanciaFormatVideoAds");
-                    instanciaFormatVideoAds();
-                }     
+                    console.info("ya se instanció ahora viene itt luego spot video");
+                }
+        }                                  
 }
 
-function instanciaFormatVideoAds(){
+function instanciaFormatVideoAds(cerrar){
     console.log("instanciaFormatVideoAds coop_dfp_tipo: ",coop_dfp_tipo);
     
     if(detectmob() === 1){
         console.log("instanciaFormatVideoAds flagNot detectmob = 1: ",flagNot);
+        console.log("instanciaFormatVideoAds detectmob = 1 cerrar : ",cerrar);
 
         if (!flagNot){
-            flagNot = true;
             switch (coop_dfp_tipo){
                 case ('portada'):
-                    go('https://pubads.g.doubleclick.net/gampad/ads?iu=/1020719/coop_m_preroll_home_stiky&description_url=http%3A%2F%2Fwww.cooperativa.cl&tfcd=0&npa=0&sz=400x300&gdfp_req=1&output=vast&unviewed_position_start=1&env=vp&impl=s&correlator=',[null], [null], [null]);
+                    if(cerrar){
+                        flagNot = true;
+                        go('https://pubads.g.doubleclick.net/gampad/ads?iu=/1020719/coop_m_preroll_home_stiky&description_url=http%3A%2F%2Fwww.cooperativa.cl&tfcd=0&npa=0&sz=400x300&gdfp_req=1&output=vast&unviewed_position_start=1&env=vp&impl=s&correlator=',[null], [null], [null]);
+                    }
                 break;
                 case ('articulo'):
-                    go('https://pubads.g.doubleclick.net/gampad/ads?iu=/1020719/coop_m_preroll_inread&description_url=https%3A%2F%2Fwww.cooperativa.cl%2F&tfcd=0&npa=0&sz=640x360&gdfp_req=1&output=vast&unviewed_position_start=1&env=vp&impl=s&correlator=',arraySeccion, arrayTem, arrayStem); 
+                    if(cerrar){
+                        flagNot = true;
+                        go('https://pubads.g.doubleclick.net/gampad/ads?iu=/1020719/coop_m_preroll_inread&description_url=https%3A%2F%2Fwww.cooperativa.cl%2F&tfcd=0&npa=0&sz=640x360&gdfp_req=1&output=vast&unviewed_position_start=1&env=vp&impl=s&correlator=',arraySeccion, arrayTem, arrayStem); 
+                    }
                 break;
             }
         }
     }else if(detectmob() === 0){
         
         console.log("instanciaFormatVideoAds flagNot detectmob = 0: ",flagNot);
+        console.log("instanciaFormatVideoAds detectmob = 0 cerrar : ",cerrar);
+
         if (!flagNot){
-            flagNot = true;
             switch (coop_dfp_tipo){
                 case ('portada'):
+                    flagNot = true;
                     go('https://pubads.g.doubleclick.net/gampad/ads?iu=/1020719/coop_d_preroll_home_stiky&description_url=http%3A%2F%2Fwww.cooperativa.cl&tfcd=0&npa=0&sz=400x300&gdfp_req=1&output=vast&unviewed_position_start=1&env=vp&impl=s&correlator=',[null], [null], [null]);
                 break;
                 case ('articulo'):
+                    flagNot = true;
                     go('https://pubads.g.doubleclick.net/gampad/ads?iu=/1020719/coop_d_preroll_inread&description_url=https%3A%2F%2Fwww.cooperativa.cl%2F&tfcd=0&npa=0&sz=640x360&gdfp_req=1&output=vast&unviewed_position_start=1&env=vp&impl=s&correlator=',arraySeccion, arrayTem, arrayStem); 
                 break;
             } 
         }
     }
 }
+
 function procesaNewItt(data){
     flag_ = true;                   
 
@@ -154,26 +173,41 @@ function detectmob() {
     else {
        return 0;
      }
-   }
+}
 
 function procesaItt(data){
-        /*Contedor iframe*/
-        const { params, tipo, cerrar} = data;
-        const { position, height, width, zIndex, display, marginTop, top, left, bottom } = params;
+        const { timeOut, cerrar} = data;
          console.log("procesaItt cerrar: ",cerrar);
          console.log("procesaItt coop_dfp_tipo: ",coop_dfp_tipo);
          console.log("procesaItt flagItt: ",flagItt)
+
             if(!flagItt){
                 if (cerrar === 1){
                     flagItt = true;
                     console.log("procesaItt llamando instanciaFormatVideoAds");
-                    instanciaFormatVideoAds();
+                    instanciaFormatVideoAds(cerrar);
                 }
             }
-        
+            if (timeOut){
+                setTimeout(function() {dibujaItt(data)}, 1000 * timeOut);
+            }
+}
+
+function dibujaItt(data){
+
+    console.log("entré dibujaItt data: ",data);
+        /*Contedor iframe*/
+
+        const { params, tipo} = data;
+        const { position, height, width, zIndex, display, marginTop, top, left, bottom } = params;
 
         let contendedor_iframe                      = document.getElementsByClassName(tipo);
         let iframe                                  = contendedor_iframe[0].getElementsByTagName('iframe');
+
+        document.getElementById("gam_container_07").classList.add("gam_position_sticky");
+        document.getElementById("gam_container_07").classList.remove("gam_position_initial");
+        document.getElementById("gam_container_01").classList.add("gam_display");
+        document.getElementById("gam_container_01").classList.remove("gam_display_none");
        
         contendedor_iframe ? 
             (contendedor_iframe[0].style.position   = position          || null,
@@ -212,9 +246,9 @@ function hideWindow(plataforma) {
             flagSkin = true;
             }  
         }      
-    }
+}
 
-    async function procesaSkin(data){
+function procesaSkin(data){
         
             if(!flag_){
                 flagSkin = true;
@@ -224,9 +258,9 @@ function hideWindow(plataforma) {
                     }); 
             }
             dibujaSkin(data, flagSkin,flag_);      
-    }
+}
 
-    function dibujaSkin(data, flagSkin, flag_){
+function dibujaSkin(data, flagSkin, flag_){
 
         if (flagSkin || !flag_){
             const {tipo, params, trackUrl } = data;
@@ -297,9 +331,9 @@ function hideWindow(plataforma) {
                 }
             }
 
-    }
+}
 
-    function procesaExpandible(data){
+function procesaExpandible(data){
         const { tipo, params } = data;
         const { height, width, tag } = params;
 
@@ -318,9 +352,9 @@ function hideWindow(plataforma) {
         
         style.appendChild(document.createTextNode(style_tag));
         document.getElementsByTagName('body')[0].appendChild(style);  
-    }
+}
 
-    function procesaFooter(data){
+function procesaFooter(data){
         /*Contedor iframe*/
         const { params, tipo } = data;
         const { position, height, width, zIndex, marginTop, bottom, right } = params;
@@ -350,4 +384,4 @@ function hideWindow(plataforma) {
            : false;
         /* /Iframe*/
 
-    }
+}
