@@ -67,11 +67,11 @@ function procesarMensaje(e) {
             if (!cerrar && mensaje !== 'itt' && mensaje !== 'newItt'){
                 console.log("entran formatos fuera de itt: ",mensaje);
                         switch (mensaje){
-                            // case('newItt'):
-                            //     procesaNewItt(data);
-                            //     flagVideo = true;
-                            //     instanciaFormatVideoAds(cerrar);
-                            // break;
+                            case('skin'):
+                                procesaSkin(data);
+                                flagVideo = true;
+                                instanciaFormatVideoAds(cerrar);
+                            break;
                             case ('expandible'):
                                 procesaExpandible(data);   
                                 flagVideo = true;
@@ -89,14 +89,11 @@ function procesarMensaje(e) {
                                     case ('itt'):
                                         console.log("llamando a procesaItt")
                                         flagVideo = true;
-
                                         procesaItt(data);
-                                        // instanciaFormatVideoAds(cerrar);
                                     break;
                                     case('newItt'):
                                         flagVideo = true;
                                         procesaItt(data);
-                                        // instanciaFormatVideoAds(cerrar);
                                     break;
                                 }   
                             }
@@ -189,7 +186,6 @@ function procesaNewItt(data){
       });
       if(event.slot.getSlotElementId() === "coop_d_1x1_1" ){
             // document.getElementById("div-gpt-ad-1530907428377-2").style.display="none";
-            console.log("dibuja newitt")
           }else{ 
               if(event.slot.getSlotElementId() === "coop_m_1x1_1") {
                 document.getElementById("div-gpt-ad-1530907736655-2").style.display="none";     
@@ -339,7 +335,6 @@ function dibujaSkin(data, flagSkin, flag_){
                 : false;
                 }
             }
-
 }
 
 function procesaExpandible(data){
