@@ -1,14 +1,14 @@
+let flag_       = false;
+let ventana_    = $(window);
+let flagSkin    = false;
+let flagItt     = false;
+let flagNot     = false;
+let flagVideo   = false;
+let plataforma  = detectmob();
+
 (function() {
     init();
 })();
-
-let flag_ = false;
-let ventana_ = $(window);
-let flagSkin = false;
-let flagItt = false;
-let flagNot = false;
-let flagVideo = false;
-
 
 function init (){
     const windowEvent       = addEventListener('message', procesarMensaje, false);
@@ -21,9 +21,41 @@ function init (){
             }
 }
 
-async function procesarMensaje(e) {
+function detectmob() {
+    if( navigator.userAgent.match(/Android/i)
+    || navigator.userAgent.match(/webOS/i)
+    || navigator.userAgent.match(/iPhone/i)
+    || navigator.userAgent.match(/iPad/i)
+    || navigator.userAgent.match(/iPod/i)
+    || navigator.userAgent.match(/BlackBerry/i)
+    || navigator.userAgent.match(/Windows Phone/i)
+    ){
+       return 1;
+     }
+    else {
+       return 0;
+     }
+}
+
+function hideWindow(plataforma) {
+    console.log("hideWindow  plataforma: ",plataforma);
+    
+        if(plataforma === 1){
+            document.getElementById("coop_m_1x1_1").style.display="none";
+            // document.getElementById("div-gpt-ad-1530907736655-2").style.display="initial";
+            flagSkin = true;
+        }else{ if(plataforma === 0){
+            document.getElementById("coop_d_1x1_1").style.display="none";
+            // document.getElementById("div-gpt-ad-1530907428377-2").style.display="initial";
+            flagSkin = true;
+            }  
+        }      
+}
+
+function procesarMensaje(e) {
+
         const { data } = e;
-        const {mensaje, cerrar, timeOut } = data;
+        const { mensaje, cerrar, timeOut } = data;
 
         console.log("procesarMensaje coop_dfp_tipo: ",coop_dfp_tipo);
         console.log("procesarMensaje timeOut: ",timeOut);
@@ -31,14 +63,15 @@ async function procesarMensaje(e) {
         console.log("procesarMensaje mensaje: ", mensaje);
 
         if(mensaje){
-            if (!cerrar && mensaje !== 'itt'){
+            if(cerrar === 1){hideWindow(plataforma);}
+            if (!cerrar && mensaje !== 'itt' && mensaje !== 'newItt'){
                 console.log("entran formatos fuera de itt: ",mensaje);
                         switch (mensaje){
-                            case('newItt'):
-                                procesaNewItt(data);
-                                flagVideo = true;
-                                instanciaFormatVideoAds(cerrar);
-                            break;
+                            // case('newItt'):
+                            //     procesaNewItt(data);
+                            //     flagVideo = true;
+                            //     instanciaFormatVideoAds(cerrar);
+                            // break;
                             case ('expandible'):
                                 procesaExpandible(data);   
                                 flagVideo = true;
@@ -51,28 +84,35 @@ async function procesarMensaje(e) {
                             break;
                             } 
                         }else{
-                        // if (typeof e !== 'object' || typeof tipo !=='string'|| cmd !== 'safe-frame' || typeof params !== 'object') {return false;}}
-                            if(mensaje === 'itt'){
-                                console.log("llamando a procesaItt")
-                                procesaItt(data);
-                                flagVideo = true;
-                                }     
+                                console.log("entran formatos itt: ",mensaje);
+                                switch (mensaje){
+                                    case ('itt'):
+                                        console.log("llamando a procesaItt")
+                                        flagVideo = true;
+
+                                        procesaItt(data);
+                                        // instanciaFormatVideoAds(cerrar);
+                                    break;
+                                    case('newItt'):
+                                        flagVideo = true;
+                                        procesaItt(data);
+                                        // instanciaFormatVideoAds(cerrar);
+                                    break;
+                                }   
                             }
         }else{
             console.log("procesarMensaje flagVideo: ",flagVideo);
             if(!flagVideo){
                 console.log("procesarMensaje flagNot llamando instanciaFormatVideoAds");
                 instanciaFormatVideoAds(cerrar);
-            }else{
-                    console.info("ya se instanció ahora viene itt luego spot video");
-                }
+            }
         }                                  
 }
 
 function instanciaFormatVideoAds(cerrar){
     console.log("instanciaFormatVideoAds coop_dfp_tipo: ",coop_dfp_tipo);
     
-    if(detectmob() === 1){
+    if(plataforma === 1){
         console.log("instanciaFormatVideoAds flagNot detectmob = 1: ",flagNot);
         console.log("instanciaFormatVideoAds detectmob = 1 cerrar : ",cerrar);
 
@@ -92,7 +132,7 @@ function instanciaFormatVideoAds(cerrar){
                 break;
             }
         }
-    }else if(detectmob() === 0){
+    }else if(plataforma === 0){
         
         console.log("instanciaFormatVideoAds flagNot detectmob = 0: ",flagNot);
         console.log("instanciaFormatVideoAds detectmob = 0 cerrar : ",cerrar);
@@ -117,7 +157,6 @@ function procesaNewItt(data){
 
     const { params, tipo } = data;
     const { height, width, margin} = params;
-
     let contendedor_iframe                      = document.getElementsByClassName(tipo);
     let iframe                                  = contendedor_iframe[0].getElementsByTagName('iframe');
 
@@ -135,16 +174,16 @@ function procesaNewItt(data){
          iframe[0].style.width                   = width              || null) 
          : false;
     /* /Iframe*/
+
     googletag.pubads().addEventListener('slotOnload', function(event) {
 
         window.addEventListener('scroll', function(e) {
           scroll_position = window.scrollY; 
           if(scroll_position >= 600){
-            let flag = detectmob();
-                if(flag){
-                    hideWindow(flag);
+                if(plataforma){
+                    hideWindow(plataforma);
                 }else{
-                    hideWindow(flag);  
+                    hideWindow(plataforma);  
                 }
           }          
       });
@@ -159,37 +198,27 @@ function procesaNewItt(data){
         });
 }
 
-function detectmob() {
-    if( navigator.userAgent.match(/Android/i)
-    || navigator.userAgent.match(/webOS/i)
-    || navigator.userAgent.match(/iPhone/i)
-    || navigator.userAgent.match(/iPad/i)
-    || navigator.userAgent.match(/iPod/i)
-    || navigator.userAgent.match(/BlackBerry/i)
-    || navigator.userAgent.match(/Windows Phone/i)
-    ){
-       return 1;
-     }
-    else {
-       return 0;
-     }
-}
-
 function procesaItt(data){
-        const { timeOut, cerrar} = data;
+        const { timeOut, cerrar, mensaje} = data;
          console.log("procesaItt cerrar: ",cerrar);
          console.log("procesaItt coop_dfp_tipo: ",coop_dfp_tipo);
          console.log("procesaItt flagItt: ",flagItt)
+         console.log("procesaItt mensaje: ",mensaje)
+
 
             if(!flagItt){
                 if (cerrar === 1){
                     flagItt = true;
+                    hideWindow(plataforma);
                     console.log("procesaItt llamando instanciaFormatVideoAds");
                     instanciaFormatVideoAds(cerrar);
+                }else if(mensaje === 'itt'){
+                    if (timeOut){
+                        setTimeout(function() {dibujaItt(data)}, 1000 * timeOut);
+                    }
+                }else if(mensaje === 'newItt'){
+                    procesaNewItt(data);
                 }
-            }
-            if (timeOut){
-                setTimeout(function() {dibujaItt(data)}, 1000 * timeOut);
             }
 }
 
@@ -203,11 +232,6 @@ function dibujaItt(data){
 
         let contendedor_iframe                      = document.getElementsByClassName(tipo);
         let iframe                                  = contendedor_iframe[0].getElementsByTagName('iframe');
-
-        document.getElementById("gam_container_07").classList.add("gam_position_sticky");
-        document.getElementById("gam_container_07").classList.remove("gam_position_initial");
-        document.getElementById("gam_container_01").classList.add("gam_display");
-        document.getElementById("gam_container_01").classList.remove("gam_display_none");
        
         contendedor_iframe ? 
             (contendedor_iframe[0].style.position   = position          || null,
@@ -231,21 +255,6 @@ function dibujaItt(data){
              iframe[0].style.left                   = left              || null ) 
              : false;
         /* /Iframe*/
-}
-
-function hideWindow(plataforma) {
-    console.log("hideWindow  plataforma: ",plataforma);
-    
-        if(plataforma === 1){
-            document.getElementById("coop_m_1x1_1").style.display="none";
-            document.getElementById("div-gpt-ad-1530907736655-2").style.display="initial";
-            flagSkin = true;
-        }else{ if(plataforma === 0){
-            document.getElementById("coop_d_1x1_1").style.display="none";
-            document.getElementById("div-gpt-ad-1530907428377-2").style.display="initial";
-            flagSkin = true;
-            }  
-        }      
 }
 
 function procesaSkin(data){
