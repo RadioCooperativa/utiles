@@ -116,16 +116,12 @@ function instanciaFormatVideoAds(cerrar){
         if (!flagNot){
             switch (coop_dfp_tipo){
                 case ('portada'):
-                    if(cerrar){
                         flagNot = true;
                         go('https://pubads.g.doubleclick.net/gampad/ads?iu=/1020719/coop_m_preroll_home_stiky&description_url=http%3A%2F%2Fwww.cooperativa.cl&tfcd=0&npa=0&sz=400x300&gdfp_req=1&output=vast&unviewed_position_start=1&env=vp&impl=s&correlator=',[null], [null], [null]);
-                    }
                 break;
                 case ('articulo'):
-                    if(cerrar){
                         flagNot = true;
                         go('https://pubads.g.doubleclick.net/gampad/ads?iu=/1020719/coop_m_preroll_inread&description_url=https%3A%2F%2Fwww.cooperativa.cl%2F&tfcd=0&npa=0&sz=640x360&gdfp_req=1&output=vast&unviewed_position_start=1&env=vp&impl=s&correlator=',arraySeccion, arrayTem, arrayStem); 
-                    }
                 break;
             }
         }
@@ -200,7 +196,6 @@ function procesaItt(data){
          console.log("procesaItt coop_dfp_tipo: ",coop_dfp_tipo);
          console.log("procesaItt flagItt: ",flagItt)
          console.log("procesaItt mensaje: ",mensaje)
-
 
             if(!flagItt){
                 if (cerrar === 1){
