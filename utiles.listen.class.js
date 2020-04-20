@@ -38,34 +38,26 @@ function detectmob() {
 }
 
 function hideWindow(plataforma) {
-    console.log("hideWindow  plataforma: ",plataforma);
     
         if(plataforma === 1){
             document.getElementById("coop_m_1x1_1").style.display="none";
-            // document.getElementById("div-gpt-ad-1530907736655-2").style.display="initial";
             flagSkin = true;
-        }else{ if(plataforma === 0){
-            document.getElementById("coop_d_1x1_1").style.display="none";
-            // document.getElementById("div-gpt-ad-1530907428377-2").style.display="initial";
-            flagSkin = true;
-            }  
-        }      
+            }else{ 
+                if(plataforma === 0){
+                    document.getElementById("coop_d_1x1_1").style.display="none";
+                    flagSkin = true;
+                    }  
+            }      
 }
 
 function procesarMensaje(e) {
 
         const { data } = e;
-        const { mensaje, cerrar, timeOut } = data;
-
-        console.log("procesarMensaje coop_dfp_tipo: ",coop_dfp_tipo);
-        console.log("procesarMensaje timeOut: ",timeOut);
-        console.log("procesarMensaje cerrar: ",cerrar);
-        console.log("procesarMensaje mensaje: ", mensaje);
+        const { mensaje, cerrar } = data;
 
         if(mensaje){
             if(cerrar === 1){hideWindow(plataforma);}
-            if (!cerrar && mensaje !== 'itt' && mensaje !== 'newItt'){
-                console.log("entran formatos fuera de itt: ",mensaje);
+                if (!cerrar && mensaje !== 'itt' && mensaje !== 'newItt'){
                         switch (mensaje){
                             case('skin'):
                                 procesaSkin(data);
@@ -84,10 +76,8 @@ function procesarMensaje(e) {
                             break;
                             } 
                         }else{
-                                console.log("entran formatos itt: ",mensaje);
                                 switch (mensaje){
                                     case ('itt'):
-                                        console.log("llamando a procesaItt")
                                         flagVideo = true;
                                         procesaItt(data);
                                     break;
@@ -98,21 +88,15 @@ function procesarMensaje(e) {
                                 }   
                             }
         }else{
-            console.log("procesarMensaje flagVideo: ",flagVideo);
             if(!flagVideo){
-                console.log("procesarMensaje flagNot llamando instanciaFormatVideoAds");
                 instanciaFormatVideoAds(cerrar);
             }
         }                                  
 }
 
 function instanciaFormatVideoAds(cerrar){
-    console.log("instanciaFormatVideoAds coop_dfp_tipo: ",coop_dfp_tipo);
     
     if(plataforma === 1){
-        console.log("instanciaFormatVideoAds flagNot detectmob = 1: ",flagNot);
-        console.log("instanciaFormatVideoAds detectmob = 1 cerrar : ",cerrar);
-
         if (!flagNot){
             switch (coop_dfp_tipo){
                 case ('portada'):
@@ -126,10 +110,6 @@ function instanciaFormatVideoAds(cerrar){
             }
         }
     }else if(plataforma === 0){
-        
-        console.log("instanciaFormatVideoAds flagNot detectmob = 0: ",flagNot);
-        console.log("instanciaFormatVideoAds detectmob = 0 cerrar : ",cerrar);
-
         if (!flagNot){
             switch (coop_dfp_tipo){
                 case ('portada'):
@@ -153,20 +133,16 @@ function procesaNewItt(data){
     let contendedor_iframe                      = document.getElementsByClassName(tipo);
     let iframe                                  = contendedor_iframe[0].getElementsByTagName('iframe');
 
-    contendedor_iframe ? 
-        
+    contendedor_iframe ?     
         (contendedor_iframe[0].style.height      = height             || null,
         contendedor_iframe[0].style.width        = width              || null,
         contendedor_iframe[0].style.margin       = margin             || null ) 
-        : false;
-    /* /Contedor iframe*/
+    : false;
 
-    /*Iframe*/
-         iframe ?  
+    iframe ?  
          (iframe[0].style.height                 = height             || null,
          iframe[0].style.width                   = width              || null) 
-         : false;
-    /* /Iframe*/
+    : false;
 
     googletag.pubads().addEventListener('slotOnload', function(event) {
 
@@ -181,8 +157,6 @@ function procesaNewItt(data){
           }          
       });
       if(event.slot.getSlotElementId() === "coop_d_1x1_1" ){
-            // document.getElementById("div-gpt-ad-1530907428377-2").style.display="none";
-            console.log("dibuja newitt")
           }else{ 
               if(event.slot.getSlotElementId() === "coop_m_1x1_1") {
                 document.getElementById("div-gpt-ad-1530907736655-2").style.display="none";     
@@ -192,17 +166,13 @@ function procesaNewItt(data){
 }
 
 function procesaItt(data){
+
         const { timeOut, cerrar, mensaje} = data;
-         console.log("procesaItt cerrar: ",cerrar);
-         console.log("procesaItt coop_dfp_tipo: ",coop_dfp_tipo);
-         console.log("procesaItt flagItt: ",flagItt)
-         console.log("procesaItt mensaje: ",mensaje)
 
             if(!flagItt){
                 if (cerrar === 1){
                     flagItt = true;
                     hideWindow(plataforma);
-                    console.log("procesaItt llamando instanciaFormatVideoAds");
                     instanciaFormatVideoAds(cerrar);
                 }else if(mensaje === 'itt'){
                     if (timeOut){
@@ -216,15 +186,12 @@ function procesaItt(data){
 
 function dibujaItt(data){
 
-    console.log("entré dibujaItt data: ",data);
-        /*Contedor iframe*/
-
         const { params, tipo} = data;
         const { position, height, width, zIndex, display, marginTop, top, left, bottom } = params;
 
         let contendedor_iframe                      = document.getElementsByClassName(tipo);
         let iframe                                  = contendedor_iframe[0].getElementsByTagName('iframe');
-       
+
         contendedor_iframe ? 
             (contendedor_iframe[0].style.position   = position          || null,
             contendedor_iframe[0].style.height      = height            || null,
@@ -234,36 +201,34 @@ function dibujaItt(data){
             contendedor_iframe[0].style.top         = top               || null,
             contendedor_iframe[0].style.bottom      = bottom            || null,
             contendedor_iframe[0].style.left        = left              || null ) 
-            : false;
-        /* /Contedor iframe*/
+        : false;
 
-        /*Iframe*/
-             iframe ?  
+        iframe ?  
              (iframe[0].style.position              = position          || null,
              iframe[0].style.height                 = height            || null,
              iframe[0].style.width                  = width             || null,
              iframe[0].style.display                = display           || null,
              iframe[0].style.top                    = top               || null,
              iframe[0].style.left                   = left              || null ) 
-             : false;
-        /* /Iframe*/
+        : false;
 }
 
 function procesaSkin(data){
         
-            if(!flag_){
-                flagSkin = true;
+    if(!flag_){
+        flagSkin = true;
             }else{
                 ventana_.on('scroll', function(){
-                    dibujaSkin(data, flagSkin,flag_);
+                dibujaSkin(data, flagSkin,flag_);
                     }); 
             }
-            dibujaSkin(data, flagSkin,flag_);      
+                dibujaSkin(data, flagSkin,flag_);      
 }
 
 function dibujaSkin(data, flagSkin, flag_){
 
         if (flagSkin || !flag_){
+
             const {tipo, params, trackUrl } = data;
             const {position, height, width, display, top, left, tag} = params;
 
@@ -274,7 +239,6 @@ function dibujaSkin(data, flagSkin, flag_){
             let contendedor_iframe                      = document.getElementsByClassName(tipo);
             let iframe                                  = contendedor_iframe[0].getElementsByTagName('iframe');
 
-            /*Iframe*/
             if(trackUrl){
                 iframe ?  
                 (iframe[0].style.position               = position          || null,
@@ -334,6 +298,7 @@ function dibujaSkin(data, flagSkin, flag_){
 }
 
 function procesaExpandible(data){
+
         const { tipo, params } = data;
         const { height, width, tag } = params;
 
@@ -343,19 +308,17 @@ function procesaExpandible(data){
         let contendedor_iframe                      = document.getElementsByClassName(tipo);
         let iframe                                  = contendedor_iframe[0].getElementsByTagName('iframe');
 
-            /*Iframe*/
-            iframe ?  
+        iframe ?  
             (iframe[0].style.height                 = height            || null,
             iframe[0].style.width                   = width             || null
             ): false;            
-            /* /Iframe*/
         
         style.appendChild(document.createTextNode(style_tag));
         document.getElementsByTagName('body')[0].appendChild(style);  
 }
 
 function procesaFooter(data){
-        /*Contedor iframe*/
+
         const { params, tipo } = data;
         const { position, height, width, zIndex, marginTop, bottom, right } = params;
 
@@ -371,10 +334,8 @@ function procesaFooter(data){
             contendedor_iframe[0].style.bottom      = bottom            || null,
             contendedor_iframe[0].style.right       = right             || null) 
             : false;
-        /* /Contedor iframe*/
 
-        /*Iframe*/
-            iframe ?  
+        iframe ?  
            (iframe[0].style.position              = position           || null,
             iframe[0].style.height                 = height            || null,
             iframe[0].style.width                  = width             || null,
@@ -382,6 +343,4 @@ function procesaFooter(data){
             iframe[0].style.marginTop              = marginTop         || null,
             iframe[0].style.right                   = right            || null ) 
            : false;
-        /* /Iframe*/
-
 }
