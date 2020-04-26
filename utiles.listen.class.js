@@ -5,6 +5,9 @@ let flagItt     = false;
 let flagNot     = false;
 let flagVideo   = false;
 let plataforma  = detectmob();
+let protocol    = window.location.protocol;
+let hostname    = window.location.hostname ;
+let site        = protocol + '//' + hostname;
 
 (function() {
     init();
@@ -12,6 +15,7 @@ let plataforma  = detectmob();
 
 function init (){
     const windowEvent       = addEventListener('message', procesarMensaje, false);
+    console.log("init site: "+site);
 
         if(window.addEventListener)
             {
@@ -52,54 +56,65 @@ function hideWindow(plataforma) {
 
 function procesarMensaje(e) {
 
-        const { data } = e;
-        const { mensaje, cerrar } = data;
-
-        if(mensaje){
-            if(cerrar === 1){hideWindow(plataforma);}
-                if (!cerrar && mensaje !== 'itt' && mensaje !== 'newItt'){
-                        switch (mensaje){
-                            case('skin'):
-                                procesaSkin(data);
-                                flagVideo = true;
-                                instanciaFormatVideoAds(cerrar);
-                            break;
-                            case ('expandible'):
-                                procesaExpandible(data);   
-                                flagVideo = true;
-                                instanciaFormatVideoAds(cerrar);
-                            break;
-                            case ('footer'):
-                                procesaFooter(data);
-                                flagVideo = true;
-                                instanciaFormatVideoAds(cerrar);
-                            break;
-                            } 
-                        }else{
-                                switch (mensaje){
-                                    case ('itt'):
-                                        flagVideo = true;
-                                        procesaItt(data);
-                                    break;
-                                    case('newItt'):
-                                        flagVideo = true;
-                                        procesaItt(data);
-                                    break;
-                                }   
-                            }
-        }else{
-            if(!flagVideo){
-                instanciaFormatVideoAds(cerrar);
+    if(e.origin.startsWith(site) || e.origin.startsWith('http://imasdk.googleapis.com')){
+        if(e.origin.startsWith(site)){
+            const {data,source:{name}} = e;
+            const {mensaje,cerrar} = data;
+            if( name === 'google_ads_iframe_/1020719/coop_d_1x1_0' || name === 'google_ads_iframe_/1020719/coop_m_1x1_0' || name === 'google_ads_iframe_/1020719/coop_m_1x1_footer_0' || name === 'google_ads_iframe_/1020719/coop_d_1x1_footer_0'){
+                console.log("procesarMEnsaje: ",mensaje);
+                if(cerrar === 1){hideWindow(plataforma);}
+                    if (!cerrar && mensaje !== 'itt' && mensaje !== 'newItt' && mensaje !== 'footer'){
+                            switch (mensaje){
+                                case('skin'):
+                                    procesaSkin(data);
+                                    flagVideo = true;
+                                    instanciaFormatVideoAds(cerrar);
+                                break;
+                                case ('expandible'):
+                                    procesaExpandible(data);   
+                                    flagVideo = true;
+                                    instanciaFormatVideoAds(cerrar);
+                                break;
+                                } 
+                            }else{
+                                    switch (mensaje){
+                                        case ('itt'):
+                                            flagVideo = true;
+                                            procesaFrame(data);
+                                        break;
+                                        case('newItt'):
+                                            flagVideo = true;
+                                            procesaFrame(data);
+                                        break;
+                                        case ('footer'):
+                                            flagVideo = true;
+                                            procesaFrame(data);
+                                        break;
+                                    }   
+                                }
+            }else{
+                if(!flagVideo){
+                    instanciaFormatVideoAds(cerrar);
+                }
             }
-        }                                  
+        }
+    }
 }
 
 function instanciaFormatVideoAds(cerrar){
-    
+
     if(plataforma === 1){
         if (!flagNot){
             switch (coop_dfp_tipo){
                 case ('portada'):
+                        flagNot = true;
+                        go('https://pubads.g.doubleclick.net/gampad/ads?iu=/1020719/coop_m_preroll_home_stiky&description_url=http%3A%2F%2Fwww.cooperativa.cl&tfcd=0&npa=0&sz=400x300&gdfp_req=1&output=vast&unviewed_position_start=1&env=vp&impl=s&correlator=',[null], [null], [null]);
+                break;
+                case ('portadilla'):
+                        flagNot = true;
+                        go('https://pubads.g.doubleclick.net/gampad/ads?iu=/1020719/coop_m_preroll_home_stiky&description_url=http%3A%2F%2Fwww.cooperativa.cl&tfcd=0&npa=0&sz=400x300&gdfp_req=1&output=vast&unviewed_position_start=1&env=vp&impl=s&correlator=',[null], [null], [null]);
+                break;
+                case ('portadilla_taxonomica'):
                         flagNot = true;
                         go('https://pubads.g.doubleclick.net/gampad/ads?iu=/1020719/coop_m_preroll_home_stiky&description_url=http%3A%2F%2Fwww.cooperativa.cl&tfcd=0&npa=0&sz=400x300&gdfp_req=1&output=vast&unviewed_position_start=1&env=vp&impl=s&correlator=',[null], [null], [null]);
                 break;
@@ -113,6 +128,14 @@ function instanciaFormatVideoAds(cerrar){
         if (!flagNot){
             switch (coop_dfp_tipo){
                 case ('portada'):
+                    flagNot = true;
+                    go('https://pubads.g.doubleclick.net/gampad/ads?iu=/1020719/coop_d_preroll_home_stiky&description_url=http%3A%2F%2Fwww.cooperativa.cl&tfcd=0&npa=0&sz=400x300&gdfp_req=1&output=vast&unviewed_position_start=1&env=vp&impl=s&correlator=',[null], [null], [null]);
+                break;
+                case ('portadilla'):
+                    flagNot = true;
+                    go('https://pubads.g.doubleclick.net/gampad/ads?iu=/1020719/coop_d_preroll_home_stiky&description_url=http%3A%2F%2Fwww.cooperativa.cl&tfcd=0&npa=0&sz=400x300&gdfp_req=1&output=vast&unviewed_position_start=1&env=vp&impl=s&correlator=',[null], [null], [null]);
+                break;
+                case ('portadilla_taxonomica'):
                     flagNot = true;
                     go('https://pubads.g.doubleclick.net/gampad/ads?iu=/1020719/coop_d_preroll_home_stiky&description_url=http%3A%2F%2Fwww.cooperativa.cl&tfcd=0&npa=0&sz=400x300&gdfp_req=1&output=vast&unviewed_position_start=1&env=vp&impl=s&correlator=',[null], [null], [null]);
                 break;
@@ -165,24 +188,38 @@ function procesaNewItt(data){
         });
 }
 
-function procesaItt(data){
+function procesaFrame(data){
 
         const { timeOut, cerrar, mensaje} = data;
+        console.log("procesaFrame cerrar: ",cerrar);
+        console.log("procesaFrame mensaje: ",mensaje);
+        console.log("procesaFrame flagItt: ",flagItt);
 
             if(!flagItt){
                 if (cerrar === 1){
                     flagItt = true;
                     hideWindow(plataforma);
-                    instanciaFormatVideoAds(cerrar);
-                }else if(mensaje === 'itt'){
-                    if (timeOut){
-                        setTimeout(function() {dibujaItt(data)}, 1000 * timeOut);
+                    instanciaFormatVideoAds(cerrar); 
+                }else {
+                    switch (mensaje){
+                        case('itt'):
+                            if (timeOut){
+                                setTimeout(function() {dibujaItt(data)}, 1000 * timeOut);
+                            }
+                        break;
+                        case('newItt'):
+                            procesaNewItt(data);
+                        break;
+                        case('footer'):
+                            if (timeOut){
+                                setTimeout(function() {dibujaFooter(data)}, 1000 * timeOut);
+                            }
+                        break;
                     }
-                }else if(mensaje === 'newItt'){
-                    procesaNewItt(data);
                 }
             }
 }
+
 
 function dibujaItt(data){
 
@@ -317,7 +354,7 @@ function procesaExpandible(data){
         document.getElementsByTagName('body')[0].appendChild(style);  
 }
 
-function procesaFooter(data){
+function dibujaFooter(data){
 
         const { params, tipo } = data;
         const { position, height, width, zIndex, marginTop, bottom, right } = params;
