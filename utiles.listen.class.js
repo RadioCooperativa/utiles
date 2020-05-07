@@ -4,6 +4,7 @@ let flagSkin    = false;
 let flagItt     = false;
 let flagNot     = false;
 let flagVideo   = false;
+let flagNotSafe  = false;
 let plataforma  = detectmob();
 let protocol    = window.location.protocol;
 let hostname    = window.location.hostname ;
@@ -59,6 +60,9 @@ function procesarMensaje(e) {
         const { mensaje, cerrar } = data;
 
         if(e.origin.startsWith('https://tpc.googlesyndication.com') || e.origin.startsWith(site)){
+            console.log("procesarMensaje entro");
+            console.log("procesarMensaje e.data.cmd: ",e.data.cmd);
+
             if(e.data.cmd === 'safe-frame'){
                 console.log("procesarMensaje mensaje: ",mensaje);
                 if(mensaje){
@@ -74,22 +78,21 @@ function procesarMensaje(e) {
                                         procesaExpandible(data);   
                                         flagVideo = true;
                                         instanciaFormatVideoAds(cerrar);
-                                    break;
-                                    
+                                    break;                                  
                                     } 
                                 }else{
                                         switch (mensaje){
                                             case ('itt'):
                                                 flagVideo = true;
-                                                procesaItt(data);
+                                                procesaFrame(data);
                                             break;
                                             case('newItt'):
                                                 flagVideo = true;
-                                                procesaItt(data);
+                                                procesaFrame(data);
                                             break;
                                             case ('footer'):
                                                 flagVideo = true;
-                                                procesaItt
+                                                procesaFrame
                                             break;
                                         }   
                                     }
@@ -99,6 +102,15 @@ function procesarMensaje(e) {
                         instanciaFormatVideoAds(cerrar);
                     }
             } 
+        }else{
+            setTimeout(function() {
+                console.log("notFrame flagVideo: ",flagVideo)
+                console.log("notFrame flagNot: ",flagNot)
+                if(!flagVideo){
+                    instanciaFormatVideoAds(cerrar);
+                }
+            }, 1000);
+           
         }
     }                                
 }
@@ -201,12 +213,12 @@ function procesaNewItt(data){
         });
 }
 
-function procesaItt(data){
+function procesaFrame(data){
 
         const { timeOut, cerrar, mensaje} = data;
-            console.log("procesaItt cerrar: ",cerrar);
-            console.log("procesaItt mensaje: ",mensaje);
-            console.log("procesaItt flagItt: ",flagItt);
+            console.log("procesaFrame cerrar: ",cerrar);
+            console.log("procesaFrame mensaje: ",mensaje);
+            console.log("procesaFrame flagItt: ",flagItt);
 
             if(!flagItt){
                 if (cerrar === 1){
