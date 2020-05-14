@@ -61,11 +61,7 @@ function procesarMensaje(e) {
         const { mensaje, cerrar } = data;
 
         if(e.origin.startsWith('https://tpc.googlesyndication.com') || e.origin.startsWith(site)){
-            console.log("procesarMensaje entro");
-            console.log("procesarMensaje e.data.cmd: ",e.data.cmd);
-
             if(e.data.cmd === 'safe-frame'){
-                console.log("procesarMensaje mensaje: ",mensaje);
                 if(mensaje){
                     if(cerrar === 1){hideWindow(plataforma);}
                         if (!cerrar && mensaje !== 'itt' && mensaje !== 'newItt' && mensaje !== 'footer'){
@@ -99,14 +95,11 @@ function procesarMensaje(e) {
                                     }
                 }else{
                     if(!flagVideo){
-                        console.log("flagVideo: ",flagVideo);
                         instanciaFormatVideoAds(cerrar);
                     }
             } 
         }else{
             setTimeout(function() {
-                console.log("notFrame flagVideo: ",flagVideo)
-                console.log("notFrame flagNot: ",flagNot)
                 if(!flagVideo){
                     instanciaFormatVideoAds(cerrar);
                 }
@@ -117,8 +110,6 @@ function procesarMensaje(e) {
 }
 
 function instanciaFormatVideoAds(cerrar){
-    console.log("instanciaFormatVideoAds plataforma: ",plataforma);
-    console.log("instanciaFormatVideoAds coop_dfp_tipo: ",coop_dfp_tipo);
     
     if(plataforma === 1){
         if (!flagNot){
@@ -137,8 +128,6 @@ function instanciaFormatVideoAds(cerrar){
                 break;
                 case(coop_dfp_tipo.indexOf('articulo') !== -1):
                         if(!coop_fid_){
-                        console.log("es articulo pero sin fid");
-
                             flagNot = true;
                             go('https://pubads.g.doubleclick.net/gampad/ads?iu=/1020719/coop_m_preroll_home_stiky&description_url=http%3A%2F%2Fwww.cooperativa.cl&tfcd=0&npa=0&sz=400x300&gdfp_req=1&output=vast&unviewed_position_start=1&env=vp&impl=s&correlator=',arraySeccion, arrayTem, arrayStem); 
                         }
@@ -165,7 +154,6 @@ function instanciaFormatVideoAds(cerrar){
                 break;
                 case(coop_dfp_tipo.indexOf('articulo') !== -1):
                     if(!coop_fid_){
-                        console.log("es articulo pero sin fid");
                         flagNot = true;
                         go('https://pubads.g.doubleclick.net/gampad/ads?iu=/1020719/coop_d_preroll_home_stiky&description_url=http%3A%2F%2Fwww.cooperativa.cl&tfcd=0&npa=0&sz=400x300&gdfp_req=1&output=vast&unviewed_position_start=1&env=vp&impl=s&correlator=',arraySeccion, arrayTem, arrayStem); 
                     }
@@ -220,9 +208,6 @@ function procesaNewItt(data){
 function procesaFrame(data){
 
         const { timeOut, cerrar, mensaje} = data;
-            console.log("procesaFrame cerrar: ",cerrar);
-            console.log("procesaFrame mensaje: ",mensaje);
-            console.log("procesaFrame flagItt: ",flagItt);
 
             if(!flagItt){
                 if (cerrar === 1){
