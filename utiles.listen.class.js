@@ -1,3 +1,4 @@
+// H2
 let flag_       = false;
 let ventana_    = $(window);
 let flagSkin    = false;
@@ -67,7 +68,7 @@ function procesarMensaje(e) {
                 console.log("procesarMensaje mensaje: ",mensaje);
                 if(mensaje){
                     if(cerrar === 1){hideWindow(plataforma);}
-                        if (!cerrar && mensaje !== 'itt' && mensaje !== 'newItt'){
+                        if (!cerrar && mensaje !== 'itt' && mensaje !== 'newItt' && mensaje !== 'footer'){
                                 switch (mensaje){
                                     case('skin'):
                                         procesaSkin(data);
@@ -92,7 +93,7 @@ function procesarMensaje(e) {
                                             break;
                                             case ('footer'):
                                                 flagVideo = true;
-                                                procesaFrame
+                                                procesaFrame(data);
                                             break;
                                         }   
                                     }
@@ -135,7 +136,9 @@ function instanciaFormatVideoAds(cerrar){
                         go('https://pubads.g.doubleclick.net/gampad/ads?iu=/1020719/coop_m_preroll_home_stiky&description_url=http%3A%2F%2Fwww.cooperativa.cl&tfcd=0&npa=0&sz=400x300&gdfp_req=1&output=vast&unviewed_position_start=1&env=vp&impl=s&correlator=',[null], [null], [null]);
                 break;
                 case(coop_dfp_tipo.indexOf('articulo') !== -1):
-                        if(coop_fid_){
+                        if(!coop_fid_){
+                        console.log("es articulo pero sin fid");
+
                             flagNot = true;
                             go('https://pubads.g.doubleclick.net/gampad/ads?iu=/1020719/coop_m_preroll_home_stiky&description_url=http%3A%2F%2Fwww.cooperativa.cl&tfcd=0&npa=0&sz=400x300&gdfp_req=1&output=vast&unviewed_position_start=1&env=vp&impl=s&correlator=',arraySeccion, arrayTem, arrayStem); 
                         }
@@ -161,7 +164,8 @@ function instanciaFormatVideoAds(cerrar){
                     go('https://pubads.g.doubleclick.net/gampad/ads?iu=/1020719/coop_d_preroll_home_stiky&description_url=http%3A%2F%2Fwww.cooperativa.cl&tfcd=0&npa=0&sz=400x300&gdfp_req=1&output=vast&unviewed_position_start=1&env=vp&impl=s&correlator=',[null], [null], [null]);
                 break;
                 case(coop_dfp_tipo.indexOf('articulo') !== -1):
-                    if(coop_fid_){
+                    if(!coop_fid_){
+                        console.log("es articulo pero sin fid");
                         flagNot = true;
                         go('https://pubads.g.doubleclick.net/gampad/ads?iu=/1020719/coop_d_preroll_home_stiky&description_url=http%3A%2F%2Fwww.cooperativa.cl&tfcd=0&npa=0&sz=400x300&gdfp_req=1&output=vast&unviewed_position_start=1&env=vp&impl=s&correlator=',arraySeccion, arrayTem, arrayStem); 
                     }
